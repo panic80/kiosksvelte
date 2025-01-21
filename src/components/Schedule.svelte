@@ -17,7 +17,7 @@
   }
 
   function handleShiftDelete(shiftId: string) {
-    dispatch('shiftDelete', shiftId);
+    dispatch('shiftDelete', { shiftId });
   }
 
   function handleShiftResize(shiftId: string, newDuration: number) {
@@ -32,7 +32,7 @@
     duration?: number;
   }
 
-  function handleDropEvent(event: Event, day: string, time: number) {
+  async function handleDropEvent(event: Event, day: string, time: number) {
     // Prevent default for both native and custom events
     event.preventDefault();
     
@@ -44,12 +44,15 @@
         // For SHIFT type, ensure we create the new shift after deleting the old one
         const { id: shiftId, personnelId, duration } = data;
         if (personnelId && duration) {
-          // Delete old shift and create new one
-          handleShiftDelete(shiftId);
-          // Small delay to ensure delete is processed first
-          setTimeout(() => {
+          // Delete old shift and wait for it to complete before creating new one
+          try {
+            await new Promise<void>((resolve, reject) => {
+              dispatch('shiftDelete', { shiftId, onComplete: resolve, onError: reject });
+            });
             handleShiftCreate(personnelId, day, time, duration);
-          }, 0);
+          } catch (error) {
+            console.error('Failed to delete shift during move:', error);
+          }
         }
       }
     }

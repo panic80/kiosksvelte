@@ -1,6 +1,6 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
-  import type { Personnel } from '../lib/types';
+  import type { Personnel } from '../lib/stores';
 
   export let isOpen = false;
 
@@ -11,6 +11,10 @@
 
   function handleSubmit(e: Event): void {
     e.preventDefault();
+
+    if (!name.trim()) {
+      return;
+    }
 
     const newPersonnel: Personnel = {
       id: Date.now().toString(),
@@ -40,7 +44,7 @@
     <div class="bg-white rounded-lg p-6 w-full max-w-md">
       <h2 class="text-xl font-semibold mb-4">Add Personnel</h2>
 
-      <form on:submit|preventDefault={handleSubmit} class="space-y-4">
+      <form on:submit={handleSubmit} class="space-y-4">
         <div>
           <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
           <input
@@ -48,7 +52,8 @@
             id="name"
             bind:value={name}
             required
-            class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            placeholder="Enter name"
+            class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           />
         </div>
 
@@ -58,9 +63,8 @@
             id="unit"
             bind:value={unit}
             required
-            class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           >
-            <option value="" disabled>Select Unit</option>
             <option value="32 CER">32 CER</option>
             <option value="32 Svc Bn">32 Svc Bn</option>
             <option value="32 CBG HQ">32 CBG HQ</option>
@@ -83,9 +87,8 @@
             id="armoury"
             bind:value={armoury}
             required
-            class="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           >
-            <option value="" disabled>Select Armoury</option>
             <option value="FYA">FYA</option>
             <option value="MPA">MPA</option>
             <option value="Denison">Denison</option>

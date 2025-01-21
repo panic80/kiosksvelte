@@ -1,0 +1,16 @@
+[
+  {
+    "id": "1737488991218",
+    "personnelId": "1737488958788",
+    "day": "Tuesday",
+    "startTime": 14,
+    "duration": 1
+  },
+  {
+    "id": "1737490022895",
+    "personnelId": "1737489548451",
+    "day": "Friday",
+    "startTime": 16,
+    "duration": 1
+  }
+]

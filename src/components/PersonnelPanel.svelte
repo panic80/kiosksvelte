@@ -16,11 +16,16 @@
     dispatch('select', newSelection);
   }
 
-  function handleDelete(person: Personnel) {
+  async function handleDelete(person: Personnel) {
     if (confirm(`Are you sure you want to delete ${person.name}?`)) {
-      deletePersonnel(person.id);
-      if (selectedPersonnel?.id === person.id) {
-        dispatch('select', null);
+      try {
+        await deletePersonnel(person.id);
+        if (selectedPersonnel?.id === person.id) {
+          dispatch('select', null);
+        }
+      } catch (error) {
+        console.error('Error deleting personnel:', error);
+        alert('Failed to delete personnel. Please try again.');
       }
     }
   }
@@ -29,7 +34,7 @@
 <div class="bg-white rounded-lg shadow p-4 mb-4">
   <h2 class="text-xl font-semibold mb-4">Personnel</h2>
   <div class="space-y-2">
-    {#each personnel as person (person.id)}
+    {#each personnel.filter(p => p && p.id) as person (person.id)}
       <div
         use:draggable={{ type: 'PERSONNEL', id: person.id }}
         class="p-3 bg-gray-50 rounded cursor-pointer hover:bg-gray-100 transition-colors relative

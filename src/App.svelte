@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
   import type { Personnel, Shift } from './lib/stores';
   import { 
     personnel, 
@@ -7,26 +6,28 @@
     selectedPersonnel, 
     isModalOpen, 
     saveState, 
-    handleUndo 
+    handleUndo,
+    addPersonnel,
+    addShift,
+    deleteShift
   } from './lib/stores';
   import Schedule from './components/Schedule.svelte';
   import PersonnelPanel from './components/PersonnelPanel.svelte';
   import PersonnelModal from './components/PersonnelModal.svelte';
 
-  // Clear localStorage on mount to prevent stale data
-  onMount(() => {
-    localStorage.clear();
-  });
-
-  function handleAddPersonnel(event: CustomEvent<Personnel>) {
-    const newPersonnel = event.detail;
-    saveState($personnel, $shifts);
-    personnel.update(prev => [...prev, newPersonnel]);
-    selectedPersonnel.set(newPersonnel);
-    isModalOpen.set(false);
+  async function handleAddPersonnel(event: CustomEvent<Personnel>) {
+    try {
+      const newPersonnel = event.detail;
+      await addPersonnel(newPersonnel);
+      selectedPersonnel.set(newPersonnel);
+      isModalOpen.set(false);
+    } catch (error) {
+      console.error('Failed to add personnel:', error);
+      alert('Failed to add personnel. Please try again.');
+    }
   }
 
-  function handleShiftCreate(event: CustomEvent<{
+  async function handleShiftCreate(event: CustomEvent<{
     personnelId: string;
     day: string;
     time: number;
@@ -42,32 +43,54 @@
     );
 
     if (existingShift) {
-      handleShiftDelete(existingShift.id);
+      await deleteShiftById(existingShift.id);
       return;
     }
 
-    saveState($personnel, $shifts);
-    const newShift: Shift = {
-      id: Date.now().toString(),
-      personnelId,
-      day,
-      startTime: time,
-      duration
-    };
-    shifts.update(prev => [...prev, newShift]);
+    try {
+      const newShift: Shift = {
+        id: Date.now().toString(),
+        personnelId,
+        day,
+        startTime: time,
+        duration
+      };
+      await addShift(newShift);
+    } catch (error) {
+      console.error('Failed to create shift:', error);
+      alert('Failed to create shift. Please try again.');
+    }
   }
 
-  function handleShiftDelete(shiftId: string) {
-    saveState($personnel, $shifts);
-    shifts.update(prev => prev.filter(shift => shift.id !== shiftId));
+  async function deleteShiftById(shiftId: string) {
+    try {
+      await deleteShift(shiftId);
+    } catch (error) {
+      console.error('Failed to delete shift:', error);
+      alert('Failed to delete shift. Please try again.');
+    }
   }
 
-  function handleShiftResize(event: CustomEvent<{
+  function handleShiftDelete(event: CustomEvent<{
+    shiftId: string;
+    onComplete?: () => void;
+    onError?: (error: Error) => void;
+  }>) {
+    const { shiftId, onComplete, onError } = event.detail;
+    deleteShiftById(shiftId)
+      .then(() => onComplete?.())
+      .catch(error => {
+        console.error('Error in handleShiftDelete:', error);
+        onError?.(error);
+      });
+  }
+
+  async function handleShiftResize(event: CustomEvent<{
     shiftId: string;
     newDuration: number;
   }>) {
     const { shiftId, newDuration } = event.detail;
-    saveState($personnel, $shifts);
+    saveState();
     shifts.update(prev => prev.map(shift =>
       shift.id === shiftId ? { ...shift, duration: newDuration } : shift
     ));
@@ -101,7 +124,7 @@
         personnel={$personnel}
         selectedPersonnel={$selectedPersonnel}
         on:shiftCreate={handleShiftCreate}
-        on:shiftDelete={e => handleShiftDelete(e.detail)}
+        on:shiftDelete={handleShiftDelete}
         on:shiftResize={handleShiftResize}
       />
     </div>
