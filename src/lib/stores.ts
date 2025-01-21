@@ -1,4 +1,4 @@
-import { writable, type Writable } from 'svelte/store';
+import { writable, get, type Writable } from 'svelte/store';
 
 export interface Personnel {
     id: string;
@@ -69,4 +69,20 @@ export function handleUndo(): void {
         
         return stack.slice(0, -1);
     });
+}
+
+// Delete personnel and their associated shifts
+export function deletePersonnel(personnelId: string): void {
+    personnel.update(current => {
+        const newPersonnel = current.filter(p => p.id !== personnelId);
+        return newPersonnel;
+    });
+    
+    shifts.update(current => {
+        const newShifts = current.filter(s => s.personnelId !== personnelId);
+        return newShifts;
+    });
+    
+    // Save state for undo
+    saveState(get(personnel), get(shifts));
 }
