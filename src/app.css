@@ -1,0 +1,114 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .app-container {
+    @apply min-h-screen bg-gray-100 p-4;
+  }
+
+  .personnel-sidebar {
+    @apply w-64 bg-white rounded-lg shadow p-4 flex-shrink-0 overflow-y-auto max-h-[calc(100vh-8rem)];
+  }
+
+  .modal-backdrop {
+    @apply fixed inset-0 bg-black bg-opacity-50 z-40;
+  }
+
+  .modal-container {
+    @apply fixed inset-0 flex items-center justify-center z-50;
+  }
+
+  .header-controls {
+    @apply flex gap-2 mt-2;
+  }
+  
+  .header-controls button {
+    @apply px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors;
+  }
+  
+  .schedule-container {
+    @apply flex mt-4 bg-white rounded-lg shadow overflow-x-auto;
+  }
+  
+  .time-column {
+    @apply min-w-[80px] border-r border-gray-200;
+  }
+  
+  .time-header, .day-header {
+    @apply p-2 text-center font-semibold bg-gray-50 border-b border-gray-200;
+  }
+  
+  .time-slots {
+    @apply divide-y divide-gray-200;
+  }
+  
+  .time-slot {
+    @apply p-2 text-center h-[60px] text-sm text-gray-600;
+  }
+  
+  .days-container {
+    @apply flex flex-1;
+  }
+  
+  .day-column {
+    @apply flex-1 min-w-[200px] border-r last:border-r-0 border-gray-200;
+  }
+  
+  .slot {
+    @apply relative h-[60px] border-b border-gray-200 transition-colors;
+  }
+  
+  .slot.clickable {
+    @apply cursor-pointer hover:bg-blue-50;
+  }
+  
+  .slot.drag-over {
+    @apply bg-blue-100;
+  }
+  
+  .shift {
+    @apply absolute left-0 right-0 m-1 p-2 bg-blue-500 text-white rounded shadow-md cursor-move;
+  }
+  
+  .shift.selected {
+    @apply ring-2 ring-yellow-400;
+  }
+  
+  .shift.dragging {
+    @apply opacity-50;
+  }
+  
+  .shift-delete {
+    @apply absolute top-1 right-1 w-5 h-5 flex items-center justify-center rounded-full 
+           hover:bg-red-600 transition-colors cursor-pointer text-lg leading-none;
+  }
+  
+  .shift-content {
+    @apply space-y-1;
+  }
+  
+  .shift-name {
+    @apply font-medium truncate;
+  }
+  
+  .shift-details {
+    @apply flex gap-2 text-sm;
+  }
+  
+  .shift-unit, .shift-armoury {
+    @apply truncate;
+  }
+  
+  .shift-duration {
+    @apply absolute bottom-1 right-2 flex items-center gap-1 text-sm;
+  }
+  
+  .resize-handle {
+    @apply absolute bottom-0 left-0 right-0 h-2 cursor-ns-resize;
+  }
+  
+  .resize-handle:hover {
+    @apply bg-blue-600;
+  }
+}
