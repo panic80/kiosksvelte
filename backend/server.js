@@ -60,13 +60,16 @@ app.get('/api/personnel', async (req, res) => {
 });
 
 app.post('/api/personnel', async (req, res) => {
+    console.log('Received new personnel data:', req.body);
     try {
         const currentData = await readJsonFile(PERSONNEL_FILE);
         const newPersonnel = req.body;
         currentData.push(newPersonnel);
         await writeJsonFile(PERSONNEL_FILE, currentData);
         res.json(newPersonnel);
+        console.log('Personnel data saved successfully');
     } catch (error) {
+        console.error('Error saving personnel data:', error);
         res.status(500).json({ error: 'Error saving personnel data' });
     }
 });

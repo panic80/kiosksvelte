@@ -7,10 +7,17 @@
     "duration": 1
   },
   {
-    "id": "1737490022895",
+    "id": "1737509521841",
+    "personnelId": "1737509519303",
+    "day": "Tuesday",
+    "startTime": 15,
+    "duration": 1
+  },
+  {
+    "id": "1737509527432",
     "personnelId": "1737489548451",
-    "day": "Friday",
-    "startTime": 16,
+    "day": "Wednesday",
+    "startTime": 15,
     "duration": 1
   }
 ]

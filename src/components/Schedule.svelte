@@ -1,6 +1,6 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
-  import { draggable, droppable } from '../lib/actions/dnd';
+  import { draggable, droppable } from '../lib 2/actions/dnd';
   import Shift from './Shift.svelte';
   import type { Personnel, Shift as ShiftType } from '../lib/stores';
 
